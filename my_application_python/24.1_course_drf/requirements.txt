@@ -34,3 +34,4 @@ wadllib
 zipp
 djangorestframework
 Pillow
+django-filter
