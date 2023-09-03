@@ -21,7 +21,6 @@ def add_lesson(course_id: int, title: str, description: str = None):
         lesson = Lesson.objects.create(title=title, description=description, course=course[0])
         return lesson
     else:
-    # except Course.DoesNotExist:
         # Передан несуществующий код курса
         raise ValueError(f"Курса с кодом {course_id} не существует")
 
@@ -44,7 +43,6 @@ class AddPayment:
             self._user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
             # Передан несуществующий код пользователя
-            # raise ValueError(f"Пользователь с кодом {user_id} не существует")
             sys.stdout.write(f"Пользователь с кодом {user_id} не существует")
     #
     @property
@@ -59,7 +57,6 @@ class AddPayment:
             self._course = Course.objects.get(pk=course_id)
         except Course.DoesNotExist:
             # Передан несуществующий код курса
-            # raise ValueError(f"Курс с кодом {course_id} не существует")
             sys.stdout.write(f"Курс с кодом {course_id} не существует")
 
     @property
@@ -74,7 +71,6 @@ class AddPayment:
             self._lesson = Lesson.objects.get(pk=lesson_id)
         except Lesson.DoesNotExist:
             # Передан несуществующий код курса
-            # raise ValueError(f"Урок с кодом {lesson_id} не существует")
             sys.stdout.write(f"Урок с кодом {lesson_id} не существует")
 
     @property
@@ -134,70 +130,6 @@ class AddLessonPayment(AddPayment):
     def __init__(self, lesson_id: int, user_id: int = 1, payment_amount: float = 0.0, payment_method: str = None):
         super().__init__(payment_object_id=lesson_id, type_payment_object = self.LESSON, user_id= user_id,
                          payment_amount = payment_amount, payment_method= payment_method)
-
-
-
-
-# def add_payment(id_parent: int, type_parent: int = 1, user_id = 1, payment_amount: float = 0.0, payment_method: str = 'cash'):
-#     """Создает новую запись по оплате. id_parent - код оплачиваемого курса или урока, type_parent -  что оплачивается (1 - курс, в остальных случаях - урок)"""
-#     # По умолчанию считаем, что курс и урок не указаны
-#     course_id = None
-#     lesson_id = None
-#     try:
-#         user = User.objects.get(pk=user_id)
-#         data_payment = {"user": user_id, "payment_amount": payment_amount, "payment_method": payment_method}
-#         # Проверяем тип парметра
-#         if type_parent == 1:
-#             # Оплачен курс
-#             course_id = id_parent
-#             # Проверяем наличие в бд  курса
-#             if not Course.objects.filter(pk=course_id).exists():
-#                 raise ValueError(f"Курса с кодом {course_id} не существует")
-#             else:
-#                 # Создаем запись по оплате
-#                 return Payment.objects.create(course=course_id, **data_payment)
-#         else:
-#             # Оплачен урок
-#             lesson_id = id_parent
-#             # Проверяем наличие в бд урока
-#             if not Lesson.objects.filter(pk=lesson_id).exists():
-#                 raise ValueError(f"Урока с кодом {lesson_id} не существует")
-#             else:
-#                 # Создаем запись по оплате
-#                 return Payment.objects.create(lesson=lesson_id, **data_payment)
-#
-#     except user.DoesNotExist:
-#         # Передан несуществующий код курса
-#         raise ValueError(f"Пользователь с кодом {user_id} не существует")
-
-
-    # if not User.objects.filter(pk=user_id).exists():
-    #     #  Проверяем существовние пользователя
-    #     raise ValueError(f"Пользователя с кодом {user_id} не существует")
-    # else:
-    #     data_payment = {"user": user_id, "payment_amount": payment_amount, "payment_method": payment_method}
-    #     # Проверяем тип парметра
-    #     if type_parent==1:
-    #         # Оплачен курс
-    #         course_id = id_parent
-    #         # Проверяем наличие в бд  курса
-    #         if not Course.objects.filter(pk=course_id).exists():
-    #             raise ValueError(f"Курса с кодом {course_id} не существует")
-    #         else:
-    #             # Создаем запись по оплате
-    #             return Payment.create(course=course_id, **data_payment)
-    #     else:
-    #         # Оплачен урок
-    #         lesson_id = id_parent
-    #         # Проверяем наличие в бд урока
-    #         if not Lesson.objects.filter(pk=lesson_id).exists():
-    #             raise ValueError(f"Урока с кодом {lesson_id} не существует")
-    #         else:
-    #             # Создаем запись по оплате
-    #             return Payment.create(lesson=lesson_id, **data_payment)
-
-
-
 
 
 def fill_courses():
