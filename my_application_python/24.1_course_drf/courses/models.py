@@ -1,6 +1,6 @@
 from django.db import models
 
-from users.models import NOT_NULLABLE, NULLABLE
+from users.models import NOT_NULLABLE, NULLABLE, User
 
 
 # Create your models here.
@@ -35,6 +35,30 @@ class Lesson(models.Model):
         verbose_name_plural ='уроки'
         ordering = ('title',)
 
+class Payment(models.Model):
+
+    CASH = 'cash'
+    NON_CASH = 'non-cash'
+
+    PAYMENT_METHOD = ((CASH, "наличные"), (NON_CASH, "перевод на счет"))
+
+    user = models.ForeignKey(to=User, verbose_name='пользователь', related_name='payments', **NOT_NULLABLE, on_delete=models.CASCADE)
+    date_pay = models.DateField(auto_now_add=True, verbose_name='дата оплаты', **NOT_NULLABLE)
+    course = models.ForeignKey(to=Course, verbose_name='курс', related_name='payments', **NULLABLE, on_delete=models.CASCADE)
+    lesson = models.ForeignKey(to=Lesson, verbose_name='урок', related_name='payments', **NULLABLE, on_delete=models.CASCADE)
+    payment_amount = models.DecimalField(max_digits=9, decimal_places=2, default=0, verbose_name='сумма оплаты', **NOT_NULLABLE)
+    payment_method = models.CharField(max_length=150, choices=PAYMENT_METHOD, verbose_name='способ оплаты', default=NON_CASH)
+
+    def __str__(self):
+        if self.course:
+            return f"{self.user} оплатил курс {self.course} {self.date_pay} на сумму {self.payment_amount} ({self.payment_method})"
+        else:
+            return f"{self.user} оплатил урок {self.lesson} {self.date_pay} на сумму {self.payment_amount} ({self.payment_method})"
+
+    class Meta:
+        verbose_name ='оплата'
+        verbose_name_plural ='оплата'
+        ordering = ('-date_pay',)
 
 
 
