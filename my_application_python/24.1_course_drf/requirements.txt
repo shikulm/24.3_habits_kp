@@ -35,3 +35,4 @@ zipp
 djangorestframework
 Pillow
 django-filter
+docutils
