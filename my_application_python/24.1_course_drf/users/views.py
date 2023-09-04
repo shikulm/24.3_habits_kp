@@ -7,5 +7,6 @@ from serializers.users import UserSerialaizer
 # Create your views here.
 
 class UserModelViewSet(viewsets.ModelViewSet):
+    """Контроллер для работы с пользователями через API (ViewSet)"""
     serializer_class = UserSerialaizer
     queryset = User.objects.all()

@@ -102,6 +102,7 @@ class AddPayment:
 
 
     def __init__(self, payment_object_id: int, type_payment_object: str = COURSE, user_id: int = 1, payment_amount: float = 0.0, payment_method: str = None):
+        """Инициализация класса с параметрами добавляемой оплаты"""
         self.user = user_id
         self.payment_amount = payment_amount
         self.payment_method = Payment.CASH if not payment_method else payment_method
@@ -114,20 +115,25 @@ class AddPayment:
 
 
     def create_and_save(self):
-        # print(self.data_payment)
+        """Создание и сохранение объекта по оплате"""
         return Payment.objects.create(**self.data_payment)
 
 
 
 class AddCoursePayment(AddPayment):
-    """Класс для создания оплаты курса"""
+    """Класс для создания оплаты курса. Создан на основе класса AddPayment"""
     def __init__(self, course_id: int, user_id: int = 1, payment_amount: float = 0.0, payment_method: str = None):
+        """Переопределние метода __init__() класса AddPayment.
+        При инициализации не надо уточнять тип оплачиваемого объекта, т.к. всегда оплачивается курс"""
         super().__init__(payment_object_id=course_id, type_payment_object = self.COURSE, user_id= user_id,
                          payment_amount = payment_amount, payment_method= payment_method)
 
 
 class AddLessonPayment(AddPayment):
+    """Класс для создания оплаты урока. Создан на основе класса AddPayment"""
     def __init__(self, lesson_id: int, user_id: int = 1, payment_amount: float = 0.0, payment_method: str = None):
+        """Переопределние метода __init__() класса AddPayment.
+        При инициализации не надо уточнять тип оплачиваемого объекта, т.к. всегда оплачивается урок"""
         super().__init__(payment_object_id=lesson_id, type_payment_object = self.LESSON, user_id= user_id,
                          payment_amount = payment_amount, payment_method= payment_method)
 
@@ -147,11 +153,14 @@ def fill_courses():
     for id_c in range(cnt_courses+1):
         # Заполняем курсы
         ind_course+=1
-        course_mew = add_course(title=f"Курс № {ind_course}", description=f"Описание курса № {ind_course}")
+        course_new = add_course(title=f"Курс № {ind_course}", description=f"Описание курса № {ind_course}")
         # Заполняем уроки курса
         cnt_lessons = randint(1, max_lessons)
         for id_l in range(cnt_lessons+1):
-            lesson_mew = add_lesson(course_id=course_mew.pk, title=f"Урок № {ind_course}.{id_l+1}", description=f"Описание урока № {ind_course}.{id_l+1} из курса № {ind_course}")
+            # Описываем характеристики урока
+            title_les = f"Урок № {ind_course}.{id_l+1}"
+            desc_les = f"Описание урока № {ind_course}.{id_l+1} из курса № {ind_course}"
+            lesson_new = add_lesson(course_id=course_new.pk, title=title_les, description=desc_les)
             # Заполняем оплату за курсы/уроки
             cnt_payment = randint(1, max_payment)
             for id_p in range(cnt_payment + 1):
@@ -164,10 +173,10 @@ def fill_courses():
                 # Создаем запись по оплате
                 if type_parent == 1:
                     #  Оплата за курс
-                    payment_mew = AddCoursePayment(course_id=course_mew.pk, payment_amount=payment_amount, payment_method = payment_method)
+                    payment_mew = AddCoursePayment(course_id=course_new.pk, payment_amount=payment_amount, payment_method = payment_method)
                 else:
                     #  Оплата за урок
-                    payment_mew = AddLessonPayment(lesson_id=lesson_mew.pk, payment_amount=payment_amount, payment_method = payment_method)
+                    payment_mew = AddLessonPayment(lesson_id=lesson_new.pk, payment_amount=payment_amount, payment_method = payment_method)
                 payment_mew.create_and_save()
 
 
