@@ -23,11 +23,12 @@ class CourseSerialaizer(serializers.ModelSerializer):
     #     return Lesson.objects.filter(course__id=instance.pk).count()
 
 
-    lessons = LessonSerialaizer(many=True)
+    lessons = LessonSerialaizer(many=True, read_only=True)
 
     class Meta:
         model = Course
-        fields = '__all__'
+        # fields = '__all__'
+        fields = ('id', 'title', 'preview', 'description', 'lessons_count', 'lessons')
 
 
 class PaymentSerialaizer(serializers.ModelSerializer):

@@ -36,3 +36,4 @@ djangorestframework
 Pillow
 django-filter
 docutils
+djangorestframework-simplejwt

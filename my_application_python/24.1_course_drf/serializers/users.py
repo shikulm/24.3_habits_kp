@@ -14,7 +14,7 @@ class PaymentSerialaizerForUser(serializers.ModelSerializer):
 
 
 class UserSerialaizer(serializers.ModelSerializer):
-    """Сериалайзер для пользователей.
+    """Сериалайзер для пользователя (используется для вывода детальной информации для пользователя о себе).
     Выводит поля по пользователяю ("id", "email", "phone", "city", "payments")
     и по оплате пользователем курсов и уроков"""
     payments = PaymentSerialaizerForUser(many=True, read_only=True)
@@ -22,7 +22,15 @@ class UserSerialaizer(serializers.ModelSerializer):
     class Meta:
         model = User
         # fields = '__all__'
-        fields = ("id", "email", "phone", "city", "payments")
+        fields = ("id", "email", "password", "last_name", "phone", "city", "payments")
 
+class UserOtherSerialaizer(serializers.ModelSerializer):
+    """Сериалайзер для вывода основных данных про другим пользователям.
+    Выводит поля по пользователяю ("id", "email", "phone", "city", "payments")
+    и по оплате пользователем курсов и уроков"""
 
+    class Meta:
+        model = User
+        # fields = '__all__'
+        fields = ("id", "email", "phone", "city")
 
