@@ -3,7 +3,8 @@ from rest_framework import viewsets, generics
 from rest_framework.filters import OrderingFilter
 
 from courses.models import Course, Lesson, Payment, Subscription
-from courses.permissions import IsOwner, IsModerator, IsOwnerOrModerator, IsNotModerator
+from courses.paginators import CoursePagintor, LessonPagintor
+from courses.permissions import IsOwner, IsOwnerOrModerator, IsNotModerator
 from serializers.courses import CourseSerialaizer, LessonSerialaizer, PaymentSerialaizer, SubscriptionSerialaizer
 
 from rest_framework.permissions import IsAuthenticated
@@ -18,6 +19,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     """Контроллер для работы с курсом через API (ViewSet)"""
     queryset = Course.objects.all()
     serializer_class = CourseSerialaizer
+    pagination_class = CoursePagintor
 
     def get_permissions(self):
         """Определение прав доступа"""
@@ -68,6 +70,7 @@ class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerialaizer
     # permission_classes = [IsAuthenticated, IsOwner, IsModerator]
     permission_classes = [IsAuthenticated]
+    pagination_class = LessonPagintor
 
     def get_queryset(self):
         """Для пользователей не из группы модераторов получаем только список принадлежащих им уроков.
