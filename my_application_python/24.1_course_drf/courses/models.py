@@ -10,6 +10,7 @@ class Course(models.Model):
     title = models.CharField(max_length=150, verbose_name='название', **NOT_NULLABLE, help_text="Название курса")
     preview = models.ImageField(upload_to='course/', verbose_name='превью', **NULLABLE, help_text="Превью курса")
     description = models.TextField(verbose_name='описание', **NULLABLE, help_text="Описание курса")
+    owner = models.ForeignKey(to=User, verbose_name='Автор', on_delete=models.CASCADE, related_name='courses', default=1)
 
     def __str__(self):
         """Выводит наименование курса при выводе на печать модели"""
@@ -28,6 +29,7 @@ class Lesson(models.Model):
     preview = models.ImageField(upload_to='course/', verbose_name='превью', **NULLABLE)
     video_url = models.CharField(max_length=200, verbose_name='ссылка на видео', **NULLABLE)
     course = models.ForeignKey(to=Course, verbose_name='курс', related_name='lessons', on_delete=models.CASCADE, **NULLABLE)
+    owner = models.ForeignKey(to=User, verbose_name='Автор', on_delete=models.CASCADE, related_name='lessons', default=1)
 
 
     def __str__(self):

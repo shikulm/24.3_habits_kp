@@ -15,10 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_simplejwt.views import TokenVerifyView
 
 urlpatterns = [
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
+    # path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('', include('courses.urls', namespace='courses')),
     path('users/', include('users.urls', namespace='users')),
 ]
