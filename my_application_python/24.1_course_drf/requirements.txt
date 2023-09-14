@@ -37,3 +37,4 @@ Pillow
 django-filter
 docutils
 djangorestframework-simplejwt
+coverage

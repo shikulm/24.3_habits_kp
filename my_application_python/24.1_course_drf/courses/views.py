@@ -2,9 +2,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, generics
 from rest_framework.filters import OrderingFilter
 
-from courses.models import Course, Lesson, Payment
-from courses.permissions import IsOwner, IsModerator, IsOwnerOrModerator, IsNotModerator
-from serializers.courses import CourseSerialaizer, LessonSerialaizer, PaymentSerialaizer
+from courses.models import Course, Lesson, Payment, Subscription
+from courses.paginators import CoursePagintor, LessonPagintor
+from courses.permissions import IsOwner, IsOwnerOrModerator, IsNotModerator
+from serializers.courses import CourseSerialaizer, LessonSerialaizer, PaymentSerialaizer, SubscriptionSerialaizer
 
 from rest_framework.permissions import IsAuthenticated
 
@@ -18,6 +19,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     """Контроллер для работы с курсом через API (ViewSet)"""
     queryset = Course.objects.all()
     serializer_class = CourseSerialaizer
+    pagination_class = CoursePagintor
 
     def get_permissions(self):
         """Определение прав доступа"""
@@ -68,6 +70,7 @@ class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerialaizer
     # permission_classes = [IsAuthenticated, IsOwner, IsModerator]
     permission_classes = [IsAuthenticated]
+    pagination_class = LessonPagintor
 
     def get_queryset(self):
         """Для пользователей не из группы модераторов получаем только список принадлежащих им уроков.
@@ -115,4 +118,40 @@ class PaymentListAPIView(generics.ListAPIView):
     # search_fields = ["course", "lesson", "payment_method",] # Для SearchFilter
     filterset_fields = ["course", "lesson", "payment_method",] # Для DjangoFilterBackend
     ordering_fields = ["date_pay", "payment_amount"]
+    permission_classes = [IsAuthenticated]
+
+
+class SubscriptionListAPIView(generics.ListAPIView):
+    """Контроллер для получения списка подписок на курсы через API (generic). Вызывается через POST-запрос
+    http://127.0.0.1:8000/subscripe/create/
+    """
+    queryset = Subscription.objects.all()
+    serializer_class = SubscriptionSerialaizer
+    permission_classes = [IsAuthenticated]
+
+class SubscriptionRetrieveAPIView(generics.RetrieveAPIView):
+    """Контроллер для получения информации о подписке на курсы через API (generic). Вызывается через GET-запрос
+    http://127.0.0.1:8000/subscripe/1/
+    """
+    queryset = Subscription.objects.all()
+    serializer_class = SubscriptionSerialaizer
+    permission_classes = [IsAuthenticated]
+
+class SubscriptionCreateAPIView(generics.CreateAPIView):
+    """Контроллер для получения информации о подписке на курсы через API (generic). Вызывается через GET-запрос
+    http://127.0.0.1:8000/subscripe/1/
+    """
+    serializer_class = SubscriptionSerialaizer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        new_subscripe = serializer.save()
+        new_subscripe.user = self.request.user
+        new_subscripe.save()
+
+class SubscriptionDestroyAPIView(generics.DestroyAPIView):
+    """Контроллер для удаления информации о подписке на курсы через API (generic). Вызывается через DELETE-запрос
+    http://127.0.0.1:8000/subscripe/delete/1/
+    """
+    queryset = Subscription.objects.all()
     permission_classes = [IsAuthenticated]

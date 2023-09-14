@@ -76,4 +76,21 @@ class Payment(models.Model):
         ordering = ('-date_pay',)
 
 
+class Subscription(models.Model):
+    """Класс с подписями пользователей на курс"""
+    course = models.ForeignKey(to=Course, verbose_name='курс', related_name='subscription', on_delete=models.CASCADE, **NOT_NULLABLE, help_text="Курс подписки")
+    user = models.ForeignKey(to=User, verbose_name='пользователь', related_name='subscription', **NOT_NULLABLE, on_delete=models.CASCADE, help_text="Подписанный пользователь")
+    date_subscripe = models.DateField(auto_now_add=True, verbose_name='дата подписки', **NOT_NULLABLE, help_text="Дата подписки")
+    def __str__(self):
+        """Выводит информацию по подписям"""
+        return f"Пользователь {self.user} подписан на курс {self.course}"
+
+    class Meta:
+        verbose_name ='подписка'
+        verbose_name_plural ='подписки'
+        ordering = ('-date_subscripe',)
+        unique_together = ('course', 'user',)
+
+
+
 
