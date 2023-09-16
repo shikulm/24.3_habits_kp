@@ -38,3 +38,4 @@ django-filter
 docutils
 djangorestframework-simplejwt
 coverage
+drf-yasg

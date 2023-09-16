@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'drf_yasg',  # Создание документации 
     'rest_framework', # Работа с API
     'django_filters', # Фильтрация запросов через API
     'django.contrib.admindocs',
