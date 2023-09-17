@@ -182,3 +182,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ],
 }
+
+# Секртеный ключ STRIPE для оплаты
+STRIPE_API_KEY = get_env_value('STRIPE_API_KEY')

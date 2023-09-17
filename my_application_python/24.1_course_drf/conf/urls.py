@@ -19,6 +19,8 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework_simplejwt.views import TokenVerifyView
+from docs import urlpatterns as docs_urls
+
 
 # Для документации
 schema_view = get_schema_view(
@@ -40,8 +42,10 @@ urlpatterns = [
     # path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('', include('courses.urls', namespace='courses')),
     path('users/', include('users.urls', namespace='users')),
-    # path('', include('docs.urls')),
+    #path('', include('docs.urls')),
 
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'), # URL для документации по drf
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
+
+urlpatterns += docs_urls
