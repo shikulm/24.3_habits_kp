@@ -5,25 +5,6 @@ from conf.settings import STRIPE_API_KEY
 from courses.models import Course, Payment
 
 
-# stripe.api_key = "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
-# stripe.api_key = "sk_test_51NqDBYJxrEpVE1z5rgKoeKvnGqDW9krXwCVeFkJgwsFbh6LmbLkLibGNNdMHy1V7i1B67yMUPAWEKbu6vjCi134L007nW9woTT"
-# stripe.api_key = STRIPE_API_KEY
-
-# starter_subscription = stripe.Product.create(
-#   name="Starter Subscription",
-#   description="$12/Month subscription",
-# )
-#
-# starter_subscription_price = stripe.Price.create(
-#   unit_amount=1200,
-#   currency="usd",
-#   recurring={"interval": "month"},
-#   product=starter_subscription['id'],
-# )
-#
-# # Save these identifiers
-# print(f"Success! Here is your starter subscription product id: {starter_subscription.id}")
-# print(f"Success! Here is your starter subscription price id: {starter_subscription_price.id}")
 
 def create_price(id_cource: int):
   """Создание оплаты за курс. Параметр - код курса"""
@@ -66,7 +47,7 @@ def create_price(id_cource: int):
     return session
 
 def retrive_session(id_pay: int):
-  """Проверка и обновление стауса оплаты и обновление """
+  """ Отслеживание платежей """
   stripe.api_key = STRIPE_API_KEY
 
   pay =  get_object_or_404(Payment, pk=id_pay)
@@ -82,13 +63,4 @@ def retrive_session(id_pay: int):
 
 # create_price(1)
 
-# Отслеживание платежей
-# Set your secret key. Remember to switch to your live secret key in production.
-# See your keys here: https://dashboard.stripe.com/apikeys
-# import stripe
-# stripe.api_key = "sk_test_51NqDBYJxrEpVE1z5rgKoeKvnGqDW9krXwCVeFkJgwsFbh6LmbLkLibGNNdMHy1V7i1B67yMUPAWEKbu6vjCi134L007nW9woTT"
-#
-# stripe.PaymentLink.create(
-#   line_items=[{"price": '{{PRICE_ID}}', "quantity": 1}],
-#   after_completion={"type": "redirect", "redirect": {"url": "https://example.com"}},
-# )
+
