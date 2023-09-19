@@ -11,6 +11,7 @@ class Course(models.Model):
     preview = models.ImageField(upload_to='course/', verbose_name='превью', **NULLABLE, help_text="Превью курса")
     description = models.TextField(verbose_name='описание', **NULLABLE, help_text="Описание курса")
     owner = models.ForeignKey(to=User, verbose_name='Автор', on_delete=models.CASCADE, related_name='courses', default=1)
+    price = models.PositiveIntegerField(default=1500, **NULLABLE, verbose_name='цена')
 
     def __str__(self):
         """Выводит наименование курса при выводе на печать модели"""
@@ -30,6 +31,7 @@ class Lesson(models.Model):
     video_url = models.CharField(max_length=200, verbose_name='ссылка на видео', **NULLABLE)
     course = models.ForeignKey(to=Course, verbose_name='курс', related_name='lessons', on_delete=models.CASCADE, **NULLABLE)
     owner = models.ForeignKey(to=User, verbose_name='Автор', on_delete=models.CASCADE, related_name='lessons', default=1)
+    price = models.PositiveIntegerField(default=1500, **NULLABLE, verbose_name='цена')
 
 
     def __str__(self):
@@ -62,6 +64,11 @@ class Payment(models.Model):
     payment_amount = models.DecimalField(max_digits=9, decimal_places=2, default=0, verbose_name='сумма оплаты', **NOT_NULLABLE, help_text="Сумма оплаты")
     payment_method = models.CharField(max_length=150, choices=PAYMENT_METHOD, verbose_name='способ оплаты', default=NON_CASH,
                                       help_text="Способ оплаты. Варианты значений: ('cash'/'non-cash'), т.е. ('наличные'/'перевод на счет')")
+    session_id = models.CharField(max_length=150, verbose_name='ID сессии Stripe', **NULLABLE,
+                                      help_text="ID сессии Stripe")
+    payment_link = models.TextField(verbose_name='сессия для оплаты', **NULLABLE, help_text="сессия для оплаты")
+    payment_url = models.TextField(verbose_name='url для оплаты', **NULLABLE, help_text="url для оплаты")
+    payment_status = models.CharField(max_length=150, verbose_name='статус оплаты', **NULLABLE, default='unpaid', help_text="статус оплаты")
 
     def __str__(self):
         """Выводит информацию по оплате при печати"""

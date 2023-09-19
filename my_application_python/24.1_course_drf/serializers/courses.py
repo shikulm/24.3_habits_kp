@@ -52,6 +52,15 @@ class PaymentSerialaizer(serializers.ModelSerializer):
         model = Payment
         fields = '__all__'
 
+class PaymentCourseSerialaizer(serializers.ModelSerializer):
+    """Сериалайзер для оплаты за курсы."""
+
+    class Meta:
+        model = Payment
+        fields = ['user', 'course', 'date_pay', 'payment_amount', 'payment_method', 'payment_url', 'session_id', 'payment_status', 'payment_link', ]
+        extra_kwargs = {'user': {'required': False}}
+
+
 class SubscriptionSerialaizer(serializers.ModelSerializer):
     """Сериалайзер по подписке на курсы и уроки.
     Выводит все поля из модели с подпиской (Subscription)"""

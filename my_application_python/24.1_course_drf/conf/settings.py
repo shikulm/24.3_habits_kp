@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'drf_yasg',  # Создание документации 
     'rest_framework', # Работа с API
     'django_filters', # Фильтрация запросов через API
     'django.contrib.admindocs',
@@ -181,3 +182,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ],
 }
+
+# Секртеный ключ STRIPE для оплаты
+STRIPE_API_KEY = get_env_value('STRIPE_API_KEY')

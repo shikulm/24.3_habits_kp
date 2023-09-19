@@ -5,9 +5,13 @@ from rest_framework.filters import OrderingFilter
 from courses.models import Course, Lesson, Payment, Subscription
 from courses.paginators import CoursePagintor, LessonPagintor
 from courses.permissions import IsOwner, IsOwnerOrModerator, IsNotModerator
-from serializers.courses import CourseSerialaizer, LessonSerialaizer, PaymentSerialaizer, SubscriptionSerialaizer
+from serializers.courses import CourseSerialaizer, LessonSerialaizer, PaymentSerialaizer, SubscriptionSerialaizer, \
+    PaymentCourseSerialaizer
 
 from rest_framework.permissions import IsAuthenticated
+
+from services import create_price
+from services.create_price import retrive_session
 
 
 # Create your views here.
@@ -119,6 +123,41 @@ class PaymentListAPIView(generics.ListAPIView):
     filterset_fields = ["course", "lesson", "payment_method",] # Для DjangoFilterBackend
     ordering_fields = ["date_pay", "payment_amount"]
     permission_classes = [IsAuthenticated]
+
+
+class PaymentCourceCreateAPIView(generics.CreateAPIView):
+    """Контроллер для создания оплаты курсы через API (generic). Вызывается через POST-запрос
+    http://127.0.0.1:8000/course/payment/create/
+    """
+    serializer_class = PaymentCourseSerialaizer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        # Сохраняем параметры оплаты
+        new_payment = serializer.save(user = self.request.user)
+        # new_payment.user = self.request.user
+        payment_data = create_price(new_payment.course_id)
+        new_payment.payment_amount = payment_data.amount_total/100
+        new_payment.payment_link = create_price(new_payment.course_id)
+        new_payment.payment_url = payment_data.url
+        new_payment.session_id = payment_data.id
+        new_payment.payment_status = payment_data.payment_status
+        new_payment.save()
+
+
+class PaymentCourceUpdateAPIView(generics.UpdateAPIView):
+    """Контроллер для обновления информации о подписке на курсы через API (generic). Вызывается через PUT-запрос
+    http://127.0.0.1:8000/course/payment/update/1
+    """
+    queryset = Payment.objects.all()
+    serializer_class = PaymentCourseSerialaizer
+    permission_classes = [IsAuthenticated]
+
+    def perform_update(self, serializer):
+        # Сохраняем параметры оплаты
+        pay = self.get_object()
+        ses = retrive_session(pay.pk)
+
 
 
 class SubscriptionListAPIView(generics.ListAPIView):
