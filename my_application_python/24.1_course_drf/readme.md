@@ -50,4 +50,10 @@
 <h3> В процессе работы могут потребоваться команды </h3>
 
 Фиксация изменений в git
-> git commit -a -m ' '
+>git commit -a -m ' '
+
+Запуск отложенных задач celery (с декоратором @shared_task)
+>celery -A conf worker -l INFO 
+ 
+Запуск периодических задач celery (с декоратором @shared_task)
+> celery -A proj beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler

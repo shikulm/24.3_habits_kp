@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'django_filters', # Фильтрация запросов через API
     'django.contrib.admindocs',
     'rest_framework_simplejwt', # Использование jwt для управления доступом через API
+    'django_celery_beat', # Для работы с периодическими задачами
 
     'users',
     'courses',
