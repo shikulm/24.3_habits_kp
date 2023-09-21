@@ -12,6 +12,7 @@ class Course(models.Model):
     description = models.TextField(verbose_name='описание', **NULLABLE, help_text="Описание курса")
     owner = models.ForeignKey(to=User, verbose_name='Автор', on_delete=models.CASCADE, related_name='courses', default=1)
     price = models.PositiveIntegerField(default=1500, **NULLABLE, verbose_name='цена')
+    last_update = models.DateTimeField(auto_now=True, verbose_name='дата последнего обновления', **NULLABLE)
 
     def __str__(self):
         """Выводит наименование курса при выводе на печать модели"""
@@ -32,6 +33,7 @@ class Lesson(models.Model):
     course = models.ForeignKey(to=Course, verbose_name='курс', related_name='lessons', on_delete=models.CASCADE, **NULLABLE)
     owner = models.ForeignKey(to=User, verbose_name='Автор', on_delete=models.CASCADE, related_name='lessons', default=1)
     price = models.PositiveIntegerField(default=1500, **NULLABLE, verbose_name='цена')
+    last_update = models.DateTimeField(auto_now=True, verbose_name='дата последнего обновления', **NULLABLE)
 
 
     def __str__(self):
@@ -99,5 +101,25 @@ class Subscription(models.Model):
         unique_together = ('course', 'user',)
 
 
+class MailingLog(models.Model):
+    """Журнал рассылки информации об изменениях в курсах"""
+    STATUS_OK = 'ok'
+    STATUS_FAIL = 'fail'
+    STATUSES = ((STATUS_OK, 'Успешно'),(STATUS_FAIL, 'Ошибка'))
 
+    datetime_mailing = models.DateTimeField(auto_now_add=True, verbose_name='дата и время рассылки', **NOT_NULLABLE)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, verbose_name='покупатель', **NOT_NULLABLE, related_name='mailing_log')
+    course = models.ForeignKey(to=Course, on_delete=models.CASCADE, verbose_name='курс', **NOT_NULLABLE, related_name='mailing_log')
+    last_update = models.DateTimeField(verbose_name='дата обновления курса', **NULLABLE)
+    status = models.CharField(max_length=150, verbose_name='статус', choices=STATUSES, default=STATUS_OK, **NOT_NULLABLE)
+    answer = models.TextField(verbose_name='ответ почтового сервера', **NULLABLE)
+
+
+    def __str__(self):
+        return f'{self.datetime_mailing} {self.client} {self.setting} {self.status}'
+
+    class Meta:
+        verbose_name = 'Запись журнала рассылки'
+        verbose_name_plural = 'Журнал рассылок'
+        ordering = ['-datetime_mailing',]
 

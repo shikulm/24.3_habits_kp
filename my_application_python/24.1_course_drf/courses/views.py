@@ -13,6 +13,8 @@ from rest_framework.permissions import IsAuthenticated
 from services import create_price
 from services.create_price import retrive_session
 
+from courses.tasks import send_mails
+
 
 # Create your views here.
 
@@ -43,6 +45,11 @@ class CourseViewSet(viewsets.ModelViewSet):
         new_сourse = serializer.save()
         new_сourse.owner = self.request.user
         new_сourse.save()
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        send_mails.delay()
+
 
     def get_queryset(self):
         """Для пользователей не из группы модераторов получаем только список принадлежащих им курсов.

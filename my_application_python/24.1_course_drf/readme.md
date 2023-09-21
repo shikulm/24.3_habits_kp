@@ -36,6 +36,8 @@
 
 > sudo service postgresql start
 
+>sudo service redis-server start 
+
 <h3> В терминале выполняем команды для начала работы </h3>
 
 Установка библиотек:
@@ -56,4 +58,7 @@
 >celery -A conf worker -l INFO 
  
 Запуск периодических задач celery (с декоратором @shared_task)
-> celery -A proj beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+> celery -A conf beat -l INFO -S django --logfile=celery.log
+
+или
+> celery -A conf beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
