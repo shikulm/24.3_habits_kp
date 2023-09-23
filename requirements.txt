@@ -1,0 +1,10 @@
+Django
+psycopg2-binary
+pillow
+djangorestframework
+django-filter
+djangorestframework-simplejwt
+coverage
+drf-yasg
+celery
+django-celery-beat
