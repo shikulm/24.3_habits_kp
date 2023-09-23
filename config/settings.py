@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'django_celery_beat',  # Для работы с периодическими задачами
 
     'users',
+    'habits',
 ]
 
 MIDDLEWARE = [
