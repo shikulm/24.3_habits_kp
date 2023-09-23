@@ -8,3 +8,4 @@ coverage
 drf-yasg
 celery
 django-celery-beat
+python-dotenv
