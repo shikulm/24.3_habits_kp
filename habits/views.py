@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
+from rest_framework import generics
 
 from habits.models import Habit
 from habits.paginators import HabitPagintor
+from habits.permissions import IsOwnerHabit
 from habits.serializers import HabitSerializer
 
 
@@ -24,6 +26,41 @@ class HabitViewSet(ModelViewSet):
         habit = serializer.save()
         habit.user = self.request.user
         habit.save()
+
+    def get_permissions(self):
+        """Определение прав доступа"""
+        permission_classes = []
+        if self.action not in ('list', 'retrieve', 'create'):
+            permission_classes = [IsOwnerHabit,]
+        print("self.action", self.action)
+        print("permission_classes", permission_classes)
+        return [permission() for permission in permission_classes]
+
+        # if self.action == 'create':
+        #     permission_classes = [IsAuthenticated, IsNotModerator]
+        # elif self.action == 'list':
+        #     permission_classes = [IsAuthenticated]
+        # elif self.action in ('retrieve', 'update'):
+        #     permission_classes = [IsOwnerOrModerator]
+        # else: # destroy
+        #     permission_classes = [IsOwner]
+
+
+
+
+class HabitPublicListAPIView(generics.ListAPIView):
+    """Контроллер для вывода публичных привычек"""
+    serializer_class = HabitSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = HabitPagintor
+
+    def get_queryset(self):
+        """Получение списка публичных привычек"""
+        print('public habit', Habit.objects.filter(public_habit=True))
+        return Habit.objects.filter(public_habit=True)
+
+
+
 
 
 

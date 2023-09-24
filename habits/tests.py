@@ -171,7 +171,8 @@ class ReadHabitTestCase(APITestCase):
 
 
         # Создание приятной привычки
-        data = {"place": "дома", "time_habit": "12:00", "action": "Есть мороженое","pleasant": True,"duration": 60}
+        data = {"place": "дома", "time_habit": "12:00",
+                "action": "Есть мороженое","pleasant": True,"duration": 60, "public_habit": False}
         self.pleasent_habit = self.client.post("/habit/", data).json()
         print("self.pleasent_habit = ", self.pleasent_habit)
         # self.pleasent_habit = Habit.objects.create(**data)
@@ -193,8 +194,8 @@ class ReadHabitTestCase(APITestCase):
         # print(self.main_habit)
 
 
-    def test_list_habit(self):
-        """Тестировние вывода списка привычек"""
+    def test_list_owner_habit(self):
+        """Тестировние вывода списка собственных привычек"""
         response = self.client.get("/habit/")
         # print("response.json(): ", response.json())
         # Прверяем статус вывода списка
@@ -222,6 +223,19 @@ class ReadHabitTestCase(APITestCase):
                             'public_habit': self.pleasent_habit.get('public_habit'),
                             'user': self.user.pk,
                             'next_habit': self.pleasent_habit.get('next_habit')})
+
+
+    def test_list_owner_habit(self):
+        """Тестировние вывода списка публичных привычек"""
+        response = self.client.get("/habit/public/")
+        print("response.json(): ", response.json())
+        # Прверяем статус вывода списка
+        self.assertEquals(response.status_code,
+                          status.HTTP_200_OK)
+        # Проверяем наличие всех добавленных привычек
+        self.assertEquals(len(response.json().get('results')), 1)
+        # Проверяем признак публичной привычки
+        self.assertTrue(response.json().get('results')[0].get('public_habit'))
 
 
 class UpdateHabitTestCase(APITestCase):
