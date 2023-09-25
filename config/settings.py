@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django_filters',  # Фильтрация запросов через API
     'rest_framework_simplejwt',  # Использование jwt для управления доступом через API
     'django_celery_beat',  # Для работы с периодическими задачами
+    'corsheaders', # Для работы с безопасностью cors
 
     'users',
     'habits',
@@ -69,6 +70,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -194,3 +196,15 @@ CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 # CELERY_TASK_TRACK_STARTED = True
 # # Максимальное время на выполнение задачи
 # CELERY_TASK_TIME_LIMIT = 30 * 60
+
+### Настройки для CORS
+CORS_ALLOWED_ORIGINS = [
+    '<http://localhost:8000>',  # Замените на адрес вашего фронтенд-сервера
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://read-and-write.example.com", #  Замените на адрес вашего фронтенд-сервера
+    # и добавьте адрес бэкенд-сервера
+]
+
+CORS_ALLOW_ALL_ORIGINS = False

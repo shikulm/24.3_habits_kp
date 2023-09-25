@@ -2,7 +2,7 @@
 
 <h3> в Ubuntu: </h3>
 
-> sudo service postgresql start
+>sudo service postgresql start
 
 >sudo service redis-server start 
 
