@@ -46,3 +46,8 @@
 Фиксация изменений в git
 >git commit -a -m ' '
 
+Проверка покрытия кода тестами
+> coverage run --source='.' manage.py test
+> 
+> coverage report
+
