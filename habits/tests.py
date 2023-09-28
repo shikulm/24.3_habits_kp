@@ -253,12 +253,30 @@ class UpdateHabitTestCase(APITestCase):
         """Тестировние обновления привычек"""
         data = {"pleasant": False}
         response = self.client.patch(f"/habit/{self.pleasent_habit.get('id')}/", data=data)
-        print("response.json() = ", response.json())
+        # print("response.json() = ", response.json())
         # Проверяем статус вывода списка
         self.assertEquals(response.status_code,
                           status.HTTP_200_OK)
         #  Проверка корректности данных
         self.assertEquals(response.json().get('pleasant'), False)
+
+    def test_perm_update(self):
+        """Тестирирование запрета на обновление чужой привычки"""
+        # Создаем и подклюбчаем нового пользователя
+        self.user2 = User.objects.create(telegram='test2')
+        self.client.force_authenticate(self.user2)
+
+        # Пробуем обновить данные привычки другого пользователя
+        data = {"duration": 30}
+        response = self.client.patch(f"/habit/{self.pleasent_habit.get('id')}/", data=data)
+        print("response.json() = ", response.json())
+        # Проверяем статус вывода списка
+        self.assertEquals(response.status_code,
+                          status.HTTP_404_NOT_FOUND)
+        #  Проверка корректности данных
+        # self.assertEquals(response.json().get('pleasant'), False)
+
+
 
 class DeleteHabitTestCase(APITestCase):
     """Тест удаления списка привычек"""
@@ -267,7 +285,7 @@ class DeleteHabitTestCase(APITestCase):
         self.user = User.objects.create(telegram='test', is_staff=True, is_superuser=True)
         self.client.force_authenticate(self.user)
 
-        # Создание привычки
+        # Обновление привычки
         data = {"place": "дома", "time_habit": "12:00", "action": "Есть мороженое","pleasant": True,"duration": 60}
         self.pleasent_habit = self.client.post("/habit/", data).json()
 

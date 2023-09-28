@@ -23,10 +23,10 @@
 >git commit -a -m ' '
 
 Запуск отложенных задач celery (с декоратором @shared_task)
->celery -A conf worker -l INFO 
+>celery -A config worker -l INFO 
  
 Запуск периодических задач celery (с декоратором @shared_task)
-> celery -A conf beat -l INFO -S django --logfile=celery.log
+> celery -A config beat -l INFO -S django --logfile=celery.log
 
 или
-> celery -A conf beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+> celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler

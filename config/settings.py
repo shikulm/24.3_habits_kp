@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
+from datetime import timedelta
 from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
 from dotenv.main import load_dotenv
@@ -187,9 +188,11 @@ REST_FRAMEWORK = {
 # URL-адрес брокера сообщений
 # CELERY_BROKER_URL = 'redis://localhost:6379' # Например, Redis, который по умолчанию работает на порту 6379
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379' # Например, Redis, который по умолчанию работает на порту 6379
+# CELERY_BROKER_URL = 'redis://172.30.249.52:6379' # Например, Redis, который по умолчанию работает на порту 6379
 # URL-адрес брокера результатов, также Redis
 # CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+# CELERY_RESULT_BACKEND = 'redis://172.30.249.52:6379'
 # # Часовой пояс для работы Celery
 # CELERY_TIMEZONE = "Australia/Tasmania"
 # # Флаг отслеживания выполнения задач
@@ -199,7 +202,7 @@ CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 
 ### Настройки для CORS
 CORS_ALLOWED_ORIGINS = [
-    '<http://localhost:8000>',  # Замените на адрес вашего фронтенд-сервера
+    'http://localhost:8000',  # Замените на адрес вашего фронтенд-сервера
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -208,3 +211,15 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = False
+
+# Настройки для ат бота telegram
+TG_TOKEN = get_env_value('TG_TOKEN')
+HTTP_TG_BOT = f"https://api.telegram.org/bot{TG_TOKEN}"
+
+# Настройки для Celery
+CELERY_BEAT_SCHEDULE = {
+    'send_to_telegram': {
+        'task': 'habits.tasks.send_to_telegram',  # Путь к задаче
+        'schedule': timedelta(seconds=5),  # Расписание выполнения задачи (например, каждые 10 минут)
+    },
+}

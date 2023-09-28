@@ -32,20 +32,9 @@ class HabitViewSet(ModelViewSet):
         permission_classes = []
         if self.action not in ('list', 'retrieve', 'create'):
             permission_classes = [IsOwnerHabit,]
-        print("self.action", self.action)
-        print("permission_classes", permission_classes)
+        # print("self.action", self.action)
+        # print("permission_classes", permission_classes)
         return [permission() for permission in permission_classes]
-
-        # if self.action == 'create':
-        #     permission_classes = [IsAuthenticated, IsNotModerator]
-        # elif self.action == 'list':
-        #     permission_classes = [IsAuthenticated]
-        # elif self.action in ('retrieve', 'update'):
-        #     permission_classes = [IsOwnerOrModerator]
-        # else: # destroy
-        #     permission_classes = [IsOwner]
-
-
 
 
 class HabitPublicListAPIView(generics.ListAPIView):
@@ -56,7 +45,7 @@ class HabitPublicListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         """Получение списка публичных привычек"""
-        print('public habit', Habit.objects.filter(public_habit=True))
+        # print('public habit', Habit.objects.filter(public_habit=True))
         return Habit.objects.filter(public_habit=True)
 
 

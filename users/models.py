@@ -13,6 +13,7 @@ class User(AbstractUser):
 
     username = None
     telegram = models.CharField(max_length=150, verbose_name='Телеграм', **NOT_NULLABLE, unique=True, help_text="Телеграм пользователя для верификации")
+    chat_id = models.PositiveIntegerField(default=0, verbose_name="код чата в телеграм", **NULLABLE, help_text="Rод чата в телеграм")
 
 
     USERNAME_FIELD = "telegram"

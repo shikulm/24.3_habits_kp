@@ -7,6 +7,10 @@ djangorestframework-simplejwt
 coverage
 drf-yasg
 celery
+redis
 django-celery-beat
 python-dotenv
 django-cors-headers
+flower
+requests
+
