@@ -30,3 +30,19 @@ class Habit(models.Model):
         verbose_name_plural = 'привычки'
 
 
+class MailingLog(models.Model):
+    """Журнал рассылки информации об отправки сообщений в telegram"""
+    datetime_mailing = models.DateTimeField(auto_now_add=True, verbose_name='дата и время рассылки', **NOT_NULLABLE)
+    habit = models.ForeignKey(to=Habit, on_delete=models.CASCADE, verbose_name='привычка', **NOT_NULLABLE, related_name='mailing_log')
+    ok = models.BooleanField(default=True, verbose_name='статус', **NOT_NULLABLE, help_text="успешная или нет отправка")
+    result = models.CharField(max_length=500, verbose_name='результат', **NULLABLE, help_text="информация о пересланном сообщении или ошибке")
+    error_code = models.PositiveIntegerField(verbose_name='код ошибки', **NULLABLE, help_text="код ошибки. Заполняется, если возникла ошибка")
+
+    def __str__(self):
+        return f'{self.datetime_mailing} {self.habit} {self.ok}'
+
+    class Meta:
+        verbose_name = 'Запись журнала рассылки'
+        verbose_name_plural = 'Журнал рассылок'
+        ordering = ['-datetime_mailing',]
+
