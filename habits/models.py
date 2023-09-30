@@ -4,6 +4,8 @@ from django.db import models
 
 from users.models import User, NULLABLE, NOT_NULLABLE
 
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 
 # Create your models here.
@@ -19,7 +21,9 @@ class Habit(models.Model):
     next_habit = models.ForeignKey(to='self', related_name='prev_habit', on_delete=models.SET_NULL, verbose_name='Связанная привычка', help_text='Связанная приятная привычка', **NULLABLE)
     frequency = models.IntegerField(default=1, verbose_name='Периодичность ', help_text='Периодичность (в днях)', **NULLABLE)
     award = models.CharField(max_length=150, verbose_name='Вознаграждение ', help_text='Вознаграждение за выполнение привычки', **NULLABLE)
-    duration = models.IntegerField(default=60, verbose_name='Время на выполнение ', help_text='Время на выполнение (в секундах)', **NOT_NULLABLE)
+    # duration = models.IntegerField(default=60, verbose_name='Время на выполнение ', help_text='Время на выполнение (в секундах)', **NOT_NULLABLE)
+    duration = models.IntegerField(default=60, validators=[MinValueValidator(0), MaxValueValidator(120)], verbose_name='Время на выполнение ',
+                                   help_text='Время на выполнение (в секундах)', **NOT_NULLABLE)
     public_habit = models.BooleanField(default=False, verbose_name='Признак публичности', help_text='Признак публичности привычки', **NOT_NULLABLE)
 
     def __str__(self):
