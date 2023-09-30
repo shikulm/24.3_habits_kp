@@ -60,20 +60,20 @@ def send_mails():
 def block_user():
     """Блокирует пользователей, которые не заходили более более месяца"""
     # Крайняя дата полдключения для блокировки
-    # last_dt_block = datetime.datetime.now(datetime.timezone.utc)-datetime.timedelta(month=1)
-    # last_dt_block = timezone.now().date() -datetime.timedelta(days=30)
-    last_dt_block =  timezone.now()-datetime.timedelta(days=3)
-    print(f"Блокируем всех, кто подключался ва последний раз до {last_dt_block}")
+    threshold_date = timezone.now().date() -datetime.timedelta(days=30)
+    # last_dt_block =  timezone.now()-datetime.timedelta(days=3)
+    print(f"Блокируем всех, кто подключался ва последний раз до {threshold_date}")
     # Получаем списка пользователей для блокировки
-    users_for_block = User.objects.filter(last_login__lte=last_dt_block)
+    # users_for_block = User.objects.filter(last_login__lte=threshold_date)
+    inactive_users = User.objects.filter(last_login__lte=threshold_date, is_active=True).update(is_active=False)
     # users_for_block = User.objects.all()
-    print("Пользователи для блокировки", users_for_block)
-    # Блокируем пользователей
-    for user in users_for_block:
-        print(f"Заблокирован пользователь {user}")
-        # user.update(is_active=False)
-        user.is_active = False
-        user.save()
+    print("Пользователи для блокировки", inactive_users)
+    # # Блокируем пользователей
+    # for user in inactive_users :
+    #     print(f"Заблокирован пользователь {user}")
+    #     # user.update(is_active=False)
+    #     user.is_active = False
+    #     user.save()
 
 
 
