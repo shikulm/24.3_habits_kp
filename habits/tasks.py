@@ -12,7 +12,6 @@ from habits.models import Habit, MailingLog
 from users.models import User
 
 
-# def send_messsage(user: User, msg: str):
 def send_messsage(habit: Habit):
     """Отправка сообщения в телеграм"""
     url = f"{HTTP_TG_BOT}/sendMessage"
@@ -35,9 +34,6 @@ def send_messsage(habit: Habit):
     print("response = ", response)
     save_log(habit, response)
 
-    # MailingLog.objects.create(user_id=user.pk, course_id=course.pk, last_update=course.last_update,
-    #                           status=MailingLog.STATUS_OK if res else MailingLog.STATUS_FAIL,
-    #                           answer=res_txt)
     return response
 
 
@@ -45,21 +41,14 @@ def update_chat_id():
     """Сохраняет chat_id пользователей в БД"""
     # получаем из телеграм информацию об обновлениях, ( обновлениях есть имя пользователя telegram и chat_id)
     url = f"{HTTP_TG_BOT}/getUpdates"
-    # print("url=", url)
-    # request.get
     response = requests.get(url).json()
-    # print("response = ", response)
     if response.get("ok"):
         # Получение списка уникальных соответсвий имен пользователей telegram и их chat_id
-        # user_chat = [(el.get("username"), el.get("id") ) for el in response.get("result").get("message").get("chat")]
         user_chats = set([(el.get("message").get("chat").get("username"), el.get("message").get("chat").get("id")) for el in response.get("result")])
         # print("user_chat = ", user_chat)
         for user_chat in user_chats:
             User.objects.filter(telegram__iregex=user_chat[0]).update(chat_id=user_chat[1])
-            # user = User.objects.filter(telegram__iregex=user_chat[0]).first()
-            # if user:
-            #     user.chat_id=user_chat[1]
-            #     user.save()
+
 
 
 def save_log(habit, response):
@@ -76,14 +65,8 @@ def send_to_telegram():
     update_chat_id()
     # Получаем спсиок задач, для которых нужно провести рассылку
     hour = datetime.datetime.now().hour
-    # print("hour = ", hour)
     minute = datetime.datetime.now().minute
-    # print("minute = ", minute)
     habits_for_send = Habit.objects.filter(time_habit__hour=hour, time_habit__minute=minute)
-    # habits_for_send = Habit.objects.all()
-    # print("habits_for_send = ", habits_for_send)
     for habit in habits_for_send:
-        # msg = f"Вам надо {habit.action} в {habit.place} в {habit.time_habit}"
-        # response = send_messsage(habit.user, msg)
         response = send_messsage(habit)
 
