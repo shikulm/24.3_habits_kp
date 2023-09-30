@@ -67,7 +67,7 @@ def block_user():
     # users_for_block = User.objects.filter(last_login__lte=threshold_date)
     inactive_users = User.objects.filter(last_login__lte=threshold_date, is_active=True).update(is_active=False)
     # users_for_block = User.objects.all()
-    print("Пользователи для блокировки", inactive_users)
+    # print("Пользователи для блокировки", inactive_users)
     # # Блокируем пользователей
     # for user in inactive_users :
     #     print(f"Заблокирован пользователь {user}")
