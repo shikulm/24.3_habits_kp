@@ -1,0 +1,97 @@
+version: '3.10'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    env_file:
+      - .env
+    ports:
+      - '5433:5432'
+#    user: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    container_name: postgresql
+
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - '6379:6379'
+    container_name: redis
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - .data.cache:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    ports:
+      - '8002:8000'
+    volumes:
+       - .:/code
+    env_file:
+      - .env
+    container_name: habits
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+    tty: true
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+  celery:
+    build: .
+    depends_on:
+      app:
+#        condition: service_started
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    container_name: celery
+    volumes:
+      - .:/app
+    tty: true
+    command: bash -c "celery -A conf worker -l INFO"
+    healthcheck:
+      #      test: [ "CMD", "executable" ]
+      #      test: ["NONE"]
+      test: ["CMD-SHELL", "celery -A conf status"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+
+  celery_beat:
+    build: .
+    restart: always
+    container_name: celery_beat
+    volumes:
+      - .:/app
+    depends_on:
+      app:
+#        condition: service_started
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    tty: true
+    command: bash -c "sleep 30 && celery -A conf beat -l INFO -S django"
+
+
+volumes:
+  pgdata:
